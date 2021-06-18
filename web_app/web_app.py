@@ -19,6 +19,14 @@ def run_web_app(data_frame):
     df_patient = get_patient_data(data_frame, option)
     st.write(df_patient)
 
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    ax.plot(df_patient['timedata'], df_patient['pulse'])
+    ax.set_title("значение пульса в динамике")
+    ax.set_xlabel("время")
+    ax.set_ylabel("уд/мин")
+    st.pyplot(fig)
+
 
 def get_patient_data(df_all_patients, id_patient):
     df_patient = df_all_patients[df_all_patients["id"] == id_patient]
