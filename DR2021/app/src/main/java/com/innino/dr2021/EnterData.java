@@ -57,9 +57,12 @@ public class EnterData extends AppCompatActivity implements AdapterView.OnItemSe
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.planets_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         spinner.setOnItemSelectedListener(this);
-        spinner.setAdapter(adapter);
+        String[] trainers = getResources().getStringArray(R.array.planets_array);
+        CustomAdapter customAdapter=new CustomAdapter(getApplicationContext(),trainers);
+
+        spinner.setAdapter(customAdapter);
     }
 
     @Override
