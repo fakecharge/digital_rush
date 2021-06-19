@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EnterData"
+    android:background="@drawable/back"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/editText2"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="Введите данные с датчика"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:textSize="35sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/textButton4"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="100dp"
+        android:layout_weight="1"
+        android:backgroundTint="#e84118"
+        android:clickable="false"
+        android:text="отправить"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:strokeColor="@color/white"
+        app:strokeWidth="10dp"
+        android:onClick="take_photo"
+        />
+
+    <EditText
+        android:id="@+id/editText3"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/round_corner"
+        android:hint="СЕРДЦЕБИЕНИЕ"
+        android:inputType="number"
+        android:textAlignment="center"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/textButton4"
+        app:strokeColor="@color/white"
+        tools:layout_editor_absoluteX="20dp"
+        android:textCursorDrawable="@drawable/cursor"/>
+
+    <EditText
+        android:id="@+id/editText4"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="30dp"
+
+        android:background="@drawable/round_corner"
+        android:hint="НИЖНЕЕ ДАВЛЕНИЕ"
+        android:inputType="number"
+        android:textAlignment="center"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/editText3"
+        app:strokeColor="@color/white"
+        tools:layout_editor_absoluteX="20dp"
+        android:textCursorDrawable="@drawable/cursor"/>
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginHorizontal="20dp"
+        android:background="@drawable/round_corner"
+        android:hint="ВЕРХНЕЕ ДАВЛЕНИЕ"
+        android:inputType="number"
+        android:textAlignment="center"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:cornerRadius="20dp"
+        android:layout_marginBottom="30dp"
+
+        app:layout_constraintBottom_toTopOf="@+id/editText4"
+        app:strokeColor="@color/white"
+        tools:layout_editor_absoluteX="20dp"
+        android:textCursorDrawable="@drawable/cursor"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
