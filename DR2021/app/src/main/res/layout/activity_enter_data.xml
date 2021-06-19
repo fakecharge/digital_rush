@@ -36,6 +36,7 @@
 
         app:strokeColor="@color/white"
         app:strokeWidth="10dp"
+        android:onClick="take_photo"
         />
 
     <EditText
