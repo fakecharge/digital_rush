@@ -65,7 +65,7 @@ def individual_analysis(data_frame):
 
     if st.button('Анализ симптомов'):
         model = learn()
-        x_data = df_patient[["pulse", "dia", "sys"]].loc[[0]]
+        x_data = df_patient[["pulse", "dia", "sys"]].head(1)
         st.write("схема лечения: ")
         result = model.predict_proba(x_data)
         result = pd.DataFrame(np.array(result), columns=["номер 1", "номер 2",  "номер 3", "номер 4"])
