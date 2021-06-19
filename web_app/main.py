@@ -5,6 +5,7 @@ import numpy as np
 import altair as alt
 from sklearn import datasets
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
 
 from PIL import Image
 image = Image.open('heart.png')
@@ -63,7 +64,14 @@ def individual_analysis(data_frame):
     draw_patient_data(df_patient)
 
     if st.button('Анализ симптомов'):
-        st.write("Пациенту следует поспать")
+        model = learn()
+        x_data = df_patient[["pulse", "dia", "sys"]].loc[[0]]
+        st.write("схема лечения: ")
+        result = model.predict_proba(x_data)
+        result = pd.DataFrame(np.array(result), columns=["номер 1", "номер 2",  "номер 3", "номер 4"])
+        result = result.rename(index={0: "эффективность"})
+        s = result.style.format("{:.2%}", na_rep="-")
+        st.write(s)
 
     sentence = st.text_input('Введите рекомендации по лечению пациенту:')
 
@@ -77,7 +85,8 @@ def individual_analysis(data_frame):
         path = "C:\\inNINO\\"
         file_name = 'patient_data_id_' + str(id_patient) + ".xlsx"
         full_path = path + file_name
-        os.mkdir(path)
+        if not os.path.exists:
+            os.mkdir(path)
         df_patient.to_excel(full_path)
         st.write("файл сохранен по следующему пути: " + full_path)
 
@@ -135,50 +144,13 @@ def load_data():
     return df
 
 
+def learn():
+    dt = pd.read_csv('Book.csv', sep=';')
+    X_train, X_test, y_train, y_test = train_test_split(dt.drop('diag', 1), dt['diag'], test_size=.03, random_state=10)
+    model = RandomForestClassifier(n_estimators=50, max_depth=7)
+    model.fit(X_train, y_train)
+    return model
+
+
 if __name__ == "__main__":
     main()
-
-
-# with st.echo("below"):
-#     balloons = st.text_input("Please enter awesome to see some balloons")
-#     if balloons == "awesome":
-#         st.balloons()
-#
-# st.write("This is a large text area.")
-# st.text_area("A very big area", height=300)
-#
-# def user_input_features():
-#     sepal_length = st.sidebar.slider('Sepal length', 4.3, 7.9, 5.4)
-#     sepal_width = st.sidebar.slider('Sepal width', 2.0, 4.4, 3.4)
-#     petal_length = st.sidebar.slider('Petal length', 1.0, 6.9, 1.3)
-#     petal_width = st.sidebar.slider('Petal width', 0.1, 2.5, 0.2)
-#     data = {'sepal_length': sepal_length,
-#             'sepal_width': sepal_width,
-#             'petal_length': petal_length,
-#             'petal_width': petal_width}
-#     features = pd.DataFrame(data, index=[0])
-#     return features
-# df = user_input_features()
-#
-# st.subheader('User Input parameters')
-# st.write(df)
-#
-# iris = datasets.load_iris()
-# X = iris.data
-# Y = iris.target
-#
-# clf = RandomForestClassifier()
-# clf.fit(X, Y)
-#
-# prediction = clf.predict(df)
-# prediction_proba = clf.predict_proba(df)
-#
-# st.subheader('Class labels and their corresponding index number')
-# st.write(iris.target_names)
-#
-# st.subheader('Prediction')
-# st.write(iris.target_names[prediction])
-# st.write(prediction)
-#
-# st.subheader('Prediction Probability')
-# st.write(prediction_proba)
