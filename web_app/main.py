@@ -8,7 +8,8 @@ from sklearn.ensemble import RandomForestClassifier
 
 from PIL import Image
 image = Image.open('heart.png')
-pat = []
+blood_pressure_max = 120
+blood_pressure_min = 50
 st.sidebar.image(image)
 st.sidebar.header('Добрый день _Иван_ _Иваныч_!')
 
@@ -55,11 +56,16 @@ def individual_analysis(data_frame):
     'id выбранного пациента: ', id_patient
 
     df_patient = get_patient_data(data_frame, id_patient)
-    st.write(df_patient)
+    s = df_patient.style.applymap(check_anomaly, subset=['pulse', 'sys', 'dia'])
+    st.write(s)
 
     'основные показатели'
     df_stat = get_patient_stat(df_patient)
-    st.write(df_stat)
+    s = df_stat.loc[['min', '25%', '50%', '75%', 'max']].style.applymap(check_anomaly)
+    std = df_stat.loc[['std']]
+    st.write(s)
+    st.write('Среднеквадратическое отклонение измерений')
+    st.write(std)
 
     draw_patient_data(df_patient)
 
@@ -73,6 +79,11 @@ def individual_analysis(data_frame):
             st.write("Рекомендация отправлена пациенту")
         else:
             st.write("Вы ничего не ввели, поле пустое")
+
+
+def check_anomaly(val):
+    color = 'red' if val > blood_pressure_max or val < blood_pressure_min else 'black'
+    return 'color: %s' % color
 
 
 def draw_patient_data(df_patient):
