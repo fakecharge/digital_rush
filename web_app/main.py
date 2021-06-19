@@ -1,6 +1,6 @@
-from vega_datasets import data
 import streamlit as st
 import pandas as pd
+import os
 import numpy as np
 import altair as alt
 from sklearn import datasets
@@ -8,7 +8,8 @@ from sklearn.ensemble import RandomForestClassifier
 
 from PIL import Image
 image = Image.open('heart.png')
-pat = []
+blood_pressure_max = 120
+blood_pressure_min = 50
 st.sidebar.image(image)
 st.sidebar.header('Добрый день _Иван_ _Иваныч_!')
 
@@ -32,7 +33,6 @@ def main():
             if submit:
                 id_patient = 2
         df = load_data()
-        st.subheader('Динамика параметров')
         id_patient = st.selectbox("Пациенты", df['id'].unique(), index=id_patient - 1)
         df_patient = get_patient_data(df, id_patient)
         draw_patient_data(df_patient)
@@ -40,12 +40,6 @@ def main():
     elif page == "Частная информация":
         df = load_data()
         st.title("Анализ результатов пациента")
-        #lt = st.sidebar.slider('Просто слайдер', 0, 10, 4, 1)
-        #st.checkbox('chk')
-        #st.time_input('time')
-        #st.multiselect('vybor', options=['Name', 'Origin', 'Horsepower', 'Miles_per_Gallon'])
-        #x_axis = st.selectbox("Выберите значение x", df.columns, index=3)
-        #y_axis = st.selectbox("Выберите значение y", df.columns, index=4)
         individual_analysis(df)
 
 
@@ -55,11 +49,16 @@ def individual_analysis(data_frame):
     'id выбранного пациента: ', id_patient
 
     df_patient = get_patient_data(data_frame, id_patient)
-    st.write(df_patient)
+    s = df_patient.style.applymap(check_anomaly, subset=['pulse', 'sys', 'dia'])
+    st.write(s)
 
     'основные показатели'
     df_stat = get_patient_stat(df_patient)
-    st.write(df_stat)
+    s = df_stat.loc[['min', '25%', '50%', '75%', 'max']].style.applymap(check_anomaly)
+    std = df_stat.loc[['std']]
+    st.write(s)
+    st.write('Среднеквадратическое отклонение измерений')
+    st.write(std)
 
     draw_patient_data(df_patient)
 
@@ -73,6 +72,19 @@ def individual_analysis(data_frame):
             st.write("Рекомендация отправлена пациенту")
         else:
             st.write("Вы ничего не ввели, поле пустое")
+
+    if st.button("Сохранить данные"):
+        path = "C:\\inNINO\\"
+        file_name = 'patient_data_id_' + str(id_patient) + ".xlsx"
+        full_path = path + file_name
+        os.mkdir(path)
+        df_patient.to_excel(full_path)
+        st.write("файл сохранен по следующему пути: " + full_path)
+
+
+def check_anomaly(val):
+    color = 'red' if val > blood_pressure_max or val < blood_pressure_min else 'black'
+    return 'color: %s' % color
 
 
 def draw_patient_data(df_patient):
