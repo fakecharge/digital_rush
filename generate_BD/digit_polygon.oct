@@ -1,0 +1,67 @@
+function polygons = digit_polygon(n,a,digit)
+
+
+switch n
+    case 1
+        polygons{1} = digit{2}.Position;
+        polygons{2} = digit{3}.Position;
+    case 2
+        polygons{1} = digit{1}.Position;
+        polygons{2} = digit{2}.Position;
+        polygons{3} = digit{7}.Position;
+        polygons{4} = digit{5}.Position;
+        polygons{5} = digit{4}.Position;
+    case 3
+        polygons{1} = digit{1}.Position;
+        polygons{2} = digit{2}.Position;
+        polygons{3} = digit{7}.Position;
+        polygons{4} = digit{3}.Position;
+        polygons{5} = digit{4}.Position;
+    case 4
+        polygons{1} = digit{6}.Position;
+        polygons{2} = digit{7}.Position;
+        polygons{3} = digit{2}.Position;
+        polygons{4} = digit{3}.Position;
+    case 5
+        polygons{1} = digit{1}.Position;
+        polygons{2} = digit{6}.Position;
+        polygons{3} = digit{7}.Position;
+        polygons{4} = digit{3}.Position;
+        polygons{5} = digit{4}.Position;
+    case 6
+        polygons{1} = digit{1}.Position;
+        polygons{2} = digit{6}.Position;
+        polygons{3} = digit{5}.Position;
+        polygons{4} = digit{4}.Position;
+        polygons{5} = digit{3}.Position;
+        polygons{6} = digit{7}.Position;
+    case 7
+        polygons{1} = digit{1}.Position;
+        polygons{2} = digit{2}.Position;
+        polygons{3} = digit{3}.Position;
+        if rand()>0.8
+            polygons{4} = digit{6}.Position;
+        end
+    case 8
+        polygons{1} = digit{1}.Position;
+        polygons{2} = digit{2}.Position;
+        polygons{3} = digit{3}.Position;
+        polygons{4} = digit{4}.Position;
+        polygons{5} = digit{5}.Position;
+        polygons{6} = digit{6}.Position;
+        polygons{7} = digit{7}.Position;
+    case 9
+        polygons{1} = digit{4}.Position;
+        polygons{2} = digit{3}.Position;
+        polygons{3} = digit{2}.Position;
+        polygons{4} = digit{1}.Position;
+        polygons{5} = digit{6}.Position;
+        polygons{6} = digit{7}.Position;
+    case 0
+        polygons{1} = digit{1}.Position;
+        polygons{2} = digit{2}.Position;
+        polygons{3} = digit{3}.Position;
+        polygons{4} = digit{4}.Position;
+        polygons{5} = digit{5}.Position;
+        polygons{6} = digit{6}.Position;
+end

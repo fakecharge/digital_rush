@@ -1,0 +1,80 @@
+function [I,rect,number,sz] = draw_digits(I,numbers,colour_digit,scale)
+
+NEED_DEBUG = 0;
+a=0; % Наклон цифр
+type = 'type1'; % Тип цифр
+load([type,'.mat'],'digit');
+
+[h,w,~] = size(I);
+M = length(numbers);
+
+digit_h=scale;
+digit_w=scale*0.5*(rand()*0.2+1); % 20%
+
+between_digit_h = digit_h/3*(rand()*0.2+1);
+between_digit_w = digit_w/4*(rand()*0.2+1);
+
+sz.digit_h = digit_h;
+sz.digit_w = digit_w;
+sz.between_digit_h = between_digit_h;
+sz.between_digit_w = between_digit_w;
+
+i = zeros([M,1]);
+for m=2:M
+    i(m) = i(m-1) + digit_h(m-1) + between_digit_h(m-1);
+end
+i = i + h/2 - (i(M)+digit_h(M))/2;
+
+maxw=0;
+for m=1:M
+    maxw = max(maxw,digit_w(m)*3+between_digit_w(m)*2);
+end
+maxj = maxw/2+w/2;
+
+if NEED_DEBUG
+    figure(23); imshow(I); hold on;
+end
+rect = [];
+number = [];
+
+for m=1:length(numbers) % Номер строки
+    dig = num2dig(numbers(m));
+    N = length(dig);
+    j = maxj;
+    for n=N:-1:1 % положение в числе
+        polygons = digit_polygon(dig(n),a,digit);
+        j = j-digit_w(m);
+        if n~=N
+            j = j-between_digit_w(m);
+        end
+        for k=1:length(polygons)
+            polygons{k}(:,1) = polygons{k}(:,1)*scale(m)+j;
+            polygons{k}(:,2) = polygons{k}(:,2)*scale(m)+i(m);
+            if NEED_DEBUG==1
+                plot([polygons{k}(:,1);polygons{k}(1,1)], [polygons{k}(:,2);polygons{k}(1,2)],'-b.');
+            end
+            indi = (floor(min(polygons{k}(:,2))):ceil(max(polygons{k}(:,2))))';
+            indj = floor(min(polygons{k}(:,1))):ceil(max(polygons{k}(:,1)));
+            [h,w,~] = size(I);
+            indi((indi)<1) = 1; indi((indi)>h) = h;
+            indj((indj)<1) = 1; indj((indj)>w) = w;
+            
+            indim = repmat(indi,1,length(indj));
+            indjm = repmat(indj,length(indi),1);
+            ind_in = inpolygon(indim,indjm,polygons{k}(:,2),polygons{k}(:,1));
+            I(sub2ind(size(I),indim(ind_in==1),indjm(ind_in==1),0+ones([sum(sum(ind_in==1)),1]))) = colour_digit(1);
+            I(sub2ind(size(I),indim(ind_in==1),indjm(ind_in==1),1+ones([sum(sum(ind_in==1)),1]))) = colour_digit(2);
+            I(sub2ind(size(I),indim(ind_in==1),indjm(ind_in==1),2+ones([sum(sum(ind_in==1)),1]))) = colour_digit(3);
+        end
+        rect = [rect; j,i(m),digit_w(m)+between_digit_w(m)/2,digit_h(m)];
+        number = [number;dig(n)];
+        if NEED_DEBUG==1
+            plot([polygons{k}(:,1);polygons{k}(1,1)], [polygons{k}(:,2);polygons{k}(1,2)],'-b.');
+            plot(j,i(m),'or');
+            images.roi.Rectangle(gca,'Position',rect(end,:));
+            pause
+        end
+    end
+end
+
+

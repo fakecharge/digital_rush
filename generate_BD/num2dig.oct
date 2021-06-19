@@ -1,0 +1,13 @@
+function dig = num2dig(num)
+
+N = ceil(log10(num+1));
+if num==0
+    N=1;
+end
+
+dig=zeros([1,N]);
+for n=N:-1:1
+    
+    dig(n) = num-floor(num/10)*10;
+    num = floor(num/10);
+end 

@@ -1,0 +1,100 @@
+clc; close all; clear all;
+
+NEED_DEBUG = 0;
+
+
+colour_display = [148,177,147]/255;
+colour_digit = [42,44,43]/255;  
+
+hh = waitbar(0,'wait');
+N=999;
+for n=1:N
+    waitbar(n/N,hh,'wait');
+    
+    %% рандомный размер изображения
+    h=round(416*(rand()+0.5));
+    w=round(416*(rand()+0.5));
+    
+    %% рандомные цвета
+    I = zeros(h,w,3);
+    I(:,:,1) = colour_display(1)*(rand()*0.2+1); % 20%
+    I(:,:,2) = colour_display(2)*(rand()*0.2+1); % 20%
+    I(:,:,3) = colour_display(3)*(rand()*0.2+1); % 20%
+    cur_colour_digit = colour_digit.*(rand(size(colour_digit))*0.2+1);
+    
+    %% рандомные цифры
+    numbers=[];
+    numbers(1) = round(rand()*(220-60)+60);
+    numbers(2) = round(rand()*(numbers(1)-20-30)+30);
+    if rand>=0.4
+        numbers(3)=round(rand()*(200-30)+30);
+    end
+    scale = [0.1;0.1;rand()*(0.1-0.05)+0.05]*h*(rand()*0.8+1);  % 80%
+       
+    [I,rect,number,sz] = draw_digits(I,numbers,cur_colour_digit,scale); % 20%
+    
+    %% Рандомные надписи
+    font_size = max(round(scale(1)*rand()),10);
+
+    K=100;
+    x = rand([K,1])*w;
+    y = rand([K,1])*h;
+    good_ind = ~((x>min(rect(:,1))-sz.digit_w(1) & x<max(rect(:,1)+rect(:,3))+sz.digit_w(1))&...
+                 (y>min(rect(:,2))-sz.digit_h(1) & y<max(rect(:,2)+rect(:,4))+sz.digit_h(1)));
+    x = x(good_ind);
+    y = y(good_ind);
+    ch={};
+    for k=1:length(x)
+       ch{k} = char('A'+round(rand()*57));
+    end
+    if ~isempty(ch)
+        I = insertText(I,[x,y],ch,'FontSize',font_size,'BoxOpacity',0,'TextColor',cur_colour_digit);
+    end
+    if NEED_DEBUG==1
+        figure(33); subplot(1,2,1); imshow(I);
+        for m=1:size(rect,1)
+            images.roi.Rectangle(gca,'Position',rect(m,:));
+            text((rect(m,1)+rect(m,3)/2),(rect(m,2)+rect(m,4)/2),num2str(number(m)),'Color','red','FontSize',12);
+        end
+%         pause;
+    end
+
+    %% Рандомные изображения фокуссировки и сжатия
+    PSF = fspecial('motion',rand()*10,rand()*10);
+    I = imfilter(I,PSF,'conv','circular');
+    
+    %% Рандомные яркостные искажения
+    I = I*(rand()+0.5)/1.5;
+    I = normrnd(I,0.01);
+    I = double(random_LUT(uint8(I*255)))/255;
+    I = I.^make_rand_gamma_correction(0.8,1.2);
+    
+    
+    %% Рандомные геометрические искажения
+%     tform = randomAffine2d('Scale',[1,1.3],'Rotation',[-15,15],'XShear',[-15,15],'YShear',[-15,15]);
+%     followOutput = affineOutputView(size(I),tform,'BoundsStyle','centerOutput');
+%     I = imwarp(I,tform,'OutputView',followOutput);
+
+    if NEED_DEBUG==1
+        figure(33); subplot(1,2,2); imshow(I);
+        for m=1:size(rect,1)
+            images.roi.Rectangle(gca,'Position',rect(m,:));
+            text((rect(m,1)+rect(m,3)/2),(rect(m,2)+rect(m,4)/2),num2str(number(m)),'Color','red','FontSize',12);
+        end
+        pause;
+    end
+    
+    %% Сохраним картинку
+    imwrite(I,['.\BD\',num2str(n),'.jpg']);
+    
+    fid = fopen(['.\BD\',num2str(n),'.txt'],'w');
+    %% сохраним разметку
+%     fprintf(fid, "%s ",[num2str(n),'.jpg']);
+    for m=1:size(rect,1)
+        pos = int32(rect(m,:));
+        fprintf(fid, '%d %f %f %f %f\r\n', number(m),double(pos(1)+pos(3)/2)/w,double(pos(2)+pos(4)/2)/h,double(pos(3))/w,double(pos(4))/h);
+    end
+    fclose(fid);
+end
+close(hh)
+

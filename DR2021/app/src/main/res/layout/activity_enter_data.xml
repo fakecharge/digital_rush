@@ -120,7 +120,8 @@
         app:layout_constraintBottom_toTopOf="@+id/upper"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
         android:textAlignment="center"
-        android:visibility="visible"
+        android:popupBackground="#fff"
+        android:background="#0000"
         />
 
 

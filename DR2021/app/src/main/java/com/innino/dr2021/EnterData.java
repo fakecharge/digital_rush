@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -42,6 +43,8 @@ public class EnterData extends AppCompatActivity implements AdapterView.OnItemSe
     TcpCLient mTcpClient;
     EditText upper, down, bit;
     int number_task = 0;
+    DBHelper dbHelper;
+    SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +57,17 @@ public class EnterData extends AppCompatActivity implements AdapterView.OnItemSe
         if (mTcpClient != null) {
             mTcpClient.sendMessage("testing");
         }
+        dbHelper = new DBHelper(EnterData.this);
+        db = dbHelper.getWritableDatabase();
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.planets_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         spinner.setOnItemSelectedListener(this);
-        spinner.setAdapter(adapter);
+        String[] trainers = getResources().getStringArray(R.array.planets_array);
+        CustomAdapter customAdapter=new CustomAdapter(getApplicationContext(),trainers);
+
+        spinner.setAdapter(customAdapter);
     }
 
     @Override
@@ -97,8 +105,9 @@ public class EnterData extends AppCompatActivity implements AdapterView.OnItemSe
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
         String str = "ID " + "0 " + timeStamp + " " + upper.getText().toString() + " " +
                 down.getText().toString() + " " + bit.getText().toString() + " " + number_task;
-//        Toast.makeText(EnterData.this, str,
-//                Toast.LENGTH_LONG).show();
+        HistoryEntitle historyEntitle = new HistoryEntitle(upper.getText().toString(),
+                down.getText().toString(), bit.getText().toString(), timeStamp.toString());
+        dbHelper.InsertEntties(historyEntitle);
         mTcpClient.sendMessage(str);
     }
 
