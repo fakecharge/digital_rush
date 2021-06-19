@@ -85,7 +85,7 @@ def individual_analysis(data_frame):
         path = "C:\\inNINO\\"
         file_name = 'patient_data_id_' + str(id_patient) + ".xlsx"
         full_path = path + file_name
-        if not os.path.exists:
+        if not os.path.exists(path):
             os.mkdir(path)
         df_patient.to_excel(full_path)
         st.write("файл сохранен по следующему пути: " + full_path)
