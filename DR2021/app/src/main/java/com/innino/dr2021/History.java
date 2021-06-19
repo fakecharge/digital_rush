@@ -28,9 +28,12 @@ public class History extends AppCompatActivity {
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(History.this);
         rv.setLayoutManager(llm);
-        HistoryEntitle test = new HistoryEntitle("22", "11", "22",
+        HistoryEntitle test = new HistoryEntitle("120", "80", "59",
+                new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()).toString());
+        HistoryEntitle test2 = new HistoryEntitle("120", "80", "61",
                 new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()).toString());
         entitles.add(test);
+        entitles.add(test2);
         AdapterHis adapter = new AdapterHis(entitles);
         rv.setAdapter(adapter);
     }

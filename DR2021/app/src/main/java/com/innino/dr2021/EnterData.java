@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.innino.dr2021.ml.Mobilenetv2;
 
 import org.tensorflow.lite.DataType;
@@ -76,8 +77,6 @@ public class EnterData extends AppCompatActivity implements AdapterView.OnItemSe
             List<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);
-            Toast.makeText(EnterData.this, spokenText,
-                    Toast.LENGTH_LONG).show();
             String[] splited = spokenText.split("\\s+");
             try {
                 upper.setText(splited[0]);
@@ -109,6 +108,11 @@ public class EnterData extends AppCompatActivity implements AdapterView.OnItemSe
                 down.getText().toString(), bit.getText().toString(), timeStamp.toString());
         dbHelper.InsertEntties(historyEntitle);
         mTcpClient.sendMessage(str);
+        upper.setText("");
+        down.setText("");
+        bit.setText("");
+        Toast.makeText(EnterData.this, "Данные отправлены",
+                Toast.LENGTH_LONG).show();
     }
 
     @Override
