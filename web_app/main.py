@@ -1,6 +1,6 @@
-from vega_datasets import data
 import streamlit as st
 import pandas as pd
+import os
 import numpy as np
 import altair as alt
 from sklearn import datasets
@@ -33,7 +33,6 @@ def main():
             if submit:
                 id_patient = 2
         df = load_data()
-        st.subheader('Динамика параметров')
         id_patient = st.selectbox("Пациенты", df['id'].unique(), index=id_patient - 1)
         df_patient = get_patient_data(df, id_patient)
         draw_patient_data(df_patient)
@@ -41,12 +40,6 @@ def main():
     elif page == "Частная информация":
         df = load_data()
         st.title("Анализ результатов пациента")
-        #lt = st.sidebar.slider('Просто слайдер', 0, 10, 4, 1)
-        #st.checkbox('chk')
-        #st.time_input('time')
-        #st.multiselect('vybor', options=['Name', 'Origin', 'Horsepower', 'Miles_per_Gallon'])
-        #x_axis = st.selectbox("Выберите значение x", df.columns, index=3)
-        #y_axis = st.selectbox("Выберите значение y", df.columns, index=4)
         individual_analysis(df)
 
 
@@ -79,6 +72,14 @@ def individual_analysis(data_frame):
             st.write("Рекомендация отправлена пациенту")
         else:
             st.write("Вы ничего не ввели, поле пустое")
+
+    if st.button("Сохранить данные"):
+        path = "C:\\inNINO\\"
+        file_name = 'patient_data_id_' + str(id_patient) + ".xlsx"
+        full_path = path + file_name
+        os.mkdir(path)
+        df_patient.to_excel(full_path)
+        st.write("файл сохранен по следующему пути: " + full_path)
 
 
 def check_anomaly(val):
