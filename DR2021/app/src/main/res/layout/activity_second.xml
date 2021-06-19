@@ -190,7 +190,7 @@
             app:strokeWidth="10dp"
             android:textStyle="bold"
             android:textColor="@color/white"
-
+            android:onClick="history"
             />
 
         <Button

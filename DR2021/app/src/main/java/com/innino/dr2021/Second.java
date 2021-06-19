@@ -145,4 +145,9 @@ public class Second extends AppCompatActivity implements SensorEventListener {
         Intent surf = new Intent(Intent.ACTION_DIAL, call);
         startActivity(surf);
     }
+
+    public void history(View view) {
+        Intent intent = new Intent(Second.this, History.class);
+        startActivity(intent);
+    }
 }
