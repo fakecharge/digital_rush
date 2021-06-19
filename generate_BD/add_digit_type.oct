@@ -1,0 +1,33 @@
+clc; close all; clear all;
+
+filename = 'type1.png'; rect = [75,144,86,114];
+N = 7;
+
+I = imread(filename);
+I = imcrop(I,rect);
+figure; imshow(I,[]);
+
+digit=cell(1,N);
+[h,w,~]=size(I);
+mini=h; maxi=0;
+minj=w; maxj=0;
+for n=1:N
+    title(char('A'+n-1))
+    digit{n} = drawpolygon('FaceAlpha',0);
+    mini = min(min(digit{n}.Position(:,1)),mini);
+    maxi = max(max(digit{n}.Position(:,1)),maxi);
+    minj = min(min(digit{n}.Position(:,2)),minj);
+    maxj = max(max(digit{n}.Position(:,2)),maxj);
+end
+
+figure(23); imshow(ones(100)); hold on;
+for n=1:N
+    digit{n}.Position(:,1) = (digit{n}.Position(:,1)-mini)/max((maxi-mini),(maxj-minj));
+    digit{n}.Position(:,2) = (digit{n}.Position(:,2)-minj)/max((maxi-mini),(maxj-minj));
+    
+    plot([digit{n}.Position(:,1);digit{n}.Position(1,1)]*100, [digit{n}.Position(:,2);digit{n}.Position(1,2)]*100,'-b.');
+end
+
+save([filename(1:find(filename=='.')-1),'.mat'],'digit');
+
+ 
